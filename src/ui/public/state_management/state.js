@@ -34,6 +34,7 @@ import { fatalError, toastNotifications } from '../notify';
 import './config_provider';
 import { createLegacyClass } from '../utils/legacy_class';
 import { callEach } from '../utils/function';
+import { calculateBounds } from '../timefilter/get_time';
 
 import {
   createStateHash,
@@ -41,7 +42,7 @@ import {
   isStateHash,
 } from './state_storage';
 
-export function StateProvider(Private, $rootScope, $location, stateManagementConfig, config, kbnUrl) {
+export function StateProvider(Private, $window, $rootScope, $log, $location, stateManagementConfig, config, kbnUrl) {
   const Events = Private(EventsProvider);
 
   createLegacyClass(State).inherits(Events);
@@ -148,6 +149,16 @@ export function StateProvider(Private, $rootScope, $location, stateManagementCon
     const diffResults = applyDiff(this, stash);
 
     if (diffResults.keys.length) {
+      if(stash.time && $window.oneDayLimit) {
+        const timeRange = { from: stash.time.from, to: stash.time.to };
+        const bounds = calculateBounds(timeRange);
+        if (bounds.max.diff(bounds.min, 'd') >= 1) {
+        // throw new Error(`时间范围必须小于一天`);
+          $log.warn('时间范围必须小于一天');
+          $window.history.back();
+        }
+      }
+
       this.emit('fetch_with_changes', diffResults.keys);
     }
   };

@@ -51,7 +51,7 @@ module.directive('kbnTimepicker', function (refreshIntervals) {
       onIntervalSelect: '&'
     },
     template: html,
-    controller: function ($scope) {
+    controller: function ($scope, $window) {
       $scope.format = 'MMMM Do YYYY, HH:mm:ss.SSS';
       $scope.modes = Object.values(TIME_MODES);
       $scope.activeTab = $scope.activeTab || 'filter';
@@ -190,6 +190,34 @@ module.directive('kbnTimepicker', function (refreshIntervals) {
           if (to && from) return to.isBefore(from);
           return true;
         }
+      };
+
+      // 检查选择的from to相对时间不能大于一天
+      $scope.checkRelativeOneDay = function () {
+        if(!$window.oneDayLimit) {
+          return false;
+        }
+        if ($scope.relative.from.count != null && $scope.relative.to.count != null) {
+          const from = dateMath.parse(getRelativeString('from'));
+          const to = dateMath.parse(getRelativeString('to'), { roundUp: true });
+          if (to && from) return to.diff(from, 'd') >= 1;
+          return false;
+        }
+        return false;
+      };
+
+      // 检查选择的from to相对时间不能大于一天
+      $scope.checkAbsoluteOneDay = function () {
+        if(!$window.oneDayLimit) {
+          return false;
+        }
+        if ($scope.absolute.from != null && $scope.absolute.to != null) {
+          const from = $scope.absolute.from;
+          const to = $scope.absolute.to;
+          if (to && from) return to.diff(from, 'd') >= 1;
+          return false;
+        }
+        return false;
       };
 
       $scope.formatRelative = function (key) {

@@ -57,8 +57,12 @@ export function kbnChromeProvider(chrome, internals) {
         },
 
         controllerAs: 'chrome',
-        controller($scope, $rootScope, Private, config) {
+        controller($scope, $window, $rootScope, Private, config) {
+
           config.watch('k7design', (val) => $scope.k7design = val);
+
+          // 默认限制一天的时间查询范围，控制台配置后可以查询更多数据
+          $window.oneDayLimit = $window.oneDayLimit === undefined ? true : $window.oneDayLimit;
 
           const getUnhashableStates = Private(getUnhashableStatesProvider);
           const subUrlRouteFilter = Private(SubUrlRouteFilterProvider);

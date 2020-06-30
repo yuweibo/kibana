@@ -36,6 +36,7 @@
             min="0"
             type="number"
             ng-class="{ 'kuiTextInput-isInvalid' : checkRelative() }"
+            ng-class="{ 'kuiTextInput-isInvalid' : checkRelativeOneDay() }"
             class="kuiTextInput fullWidth"
           >
         </div>
@@ -46,6 +47,7 @@
             ng-options="opt.value as opt.text for opt in relativeOptions"
             ng-change="formatRelative({key:'from'})"
             ng-class="{ 'kuiSelect-isInvalid': checkRelative() }"
+            ng-class="{ 'kuiSelect-isInvalid': checkRelativeOneDay() }"
             class="kuiSelect fullWidth"
           >
           </select>
@@ -104,6 +106,7 @@
             min="0"
             type="number"
             ng-class="{ 'kuiTextInput-isInvalid': checkRelative() }"
+            ng-class="{ 'kuiTextInput-isInvalid': checkRelativeOneDay() }"
             class="kuiTextInput fullWidth"
           >
         </div>
@@ -114,6 +117,7 @@
             ng-options="opt.value as opt.text for opt in relativeOptions"
             ng-change="formatRelative({key:'to'})"
             ng-class="{ 'kuiSelect-isInvalid': checkRelative() }"
+            ng-class="{ 'kuiSelect-isInvalid': checkRelativeOneDay() }"
             class="kuiSelect fullWidth"
           >
           </select>
@@ -144,10 +148,16 @@
     >
       <strong>From</strong> must occur before <strong>To</strong>
     </span>
+    <span
+      class="kbn-timepicker-action-item kbn-timepicker-error"
+      ng-show="checkRelativeOneDay()"
+    >
+      <strong>From</strong> 时间范围必须小于一天 <strong>To</strong>
+    </span>
     <button
       type="submit"
       class="kuiButton kuiButton--primary kbn-timepicker-submit-button"
-      ng-disabled="!(relative.from.preview && relative.to.preview) || checkRelative()"
+      ng-disabled="!(relative.from.preview && relative.to.preview) || checkRelative() || checkRelativeOneDay()"
       data-test-subj="timepickerGoButton"
     >
       Go

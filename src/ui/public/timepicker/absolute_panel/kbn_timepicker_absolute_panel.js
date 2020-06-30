@@ -29,6 +29,7 @@ module.directive('kbnTimepickerAbsolutePanel', function () {
     scope: {
       absolute: '=',
       applyAbsolute: '&',
+      checkAbsoluteOneDay: '&',
       format: '=',
       pickFromDate: '=',
       pickToDate: '=',

@@ -21,7 +21,7 @@ import template from './kbn_timepicker_relative_panel.html';
 import { uiModules } from '../../modules';
 
 const module = uiModules.get('ui/timepicker');
-
+const relativeOptionsFilter = 'Seconds ago,Minutes ago,Hours ago,Days ago,Seconds from now,Minutes from now,Hours from now,Days from now';
 module.directive('kbnTimepickerRelativePanel', function () {
   return {
     restrict: 'E',
@@ -29,6 +29,7 @@ module.directive('kbnTimepickerRelativePanel', function () {
     scope: {
       applyRelative: '&',
       checkRelative: '&',
+      checkRelativeOneDay: '&',
       formatRelative: '&',
       relative: '=',
       relativeOptions: '=',
@@ -36,7 +37,11 @@ module.directive('kbnTimepickerRelativePanel', function () {
       units: '='
     },
     template,
-    controller: function () {
+    controller: function ($scope, $window) {
+      $scope.relativeOptions = $window.oneDayLimit
+        ? $scope.relativeOptions
+          .filter(r => relativeOptionsFilter.indexOf(r.text) > -1)
+        : $scope.relativeOptions;
     }
   };
 });

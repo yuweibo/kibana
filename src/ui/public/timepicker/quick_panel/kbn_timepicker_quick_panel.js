@@ -31,9 +31,11 @@ module.directive('kbnTimepickerQuickPanel', function (config) {
       setQuick: '&'
     },
     template,
-    controller: function ($scope) {
+    controller: function ($scope, $window) {
       const quickRanges = config.get('timepicker:quickRanges');
-      $scope.quickLists = _(quickRanges).groupBy('section').values().value();
+      const filterQuickRanges = $window.oneDayLimit ? quickRanges
+        .filter(q=>'now/d,now-15m,now-30m,now-1h,now-4h,now-12h,now-24h'.indexOf(q.from) > -1) : quickRanges;
+      $scope.quickLists = _(filterQuickRanges).groupBy('section').values().value();
     }
   };
 });
